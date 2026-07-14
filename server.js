@@ -181,19 +181,20 @@ app.post('/api/applications', async (req, res) => {
     
     const newApp = {
       _id: crypto.randomUUID(),
-      company: req.body.company,
-      date: req.body.date,
-      role: req.body.role,
-      domain: req.body.domain || '',
-      region: req.body.region || 'UAE',
-      resume: req.body.resume || '',
-      status: req.body.status || 'applied',
-      priority: req.body.priority || 'medium',
-      next: req.body.next || '',
-      contact: req.body.contact || '',
-      link: req.body.link || '',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      company:     req.body.company,
+      date:        req.body.date,
+      role:        req.body.role,
+      domain:      req.body.domain      || '',
+      region:      req.body.region      || 'UAE',
+      resume:      req.body.resume      || '',
+      status:      req.body.status      || 'applied',
+      priority:    req.body.priority    || 'medium',
+      next:        req.body.next        || '',
+      contactName: req.body.contactName || '',
+      contact:     req.body.contact     || '',
+      link:        req.body.link        || '',
+      createdAt:   new Date().toISOString(),
+      updatedAt:   new Date().toISOString()
     };
 
     apps.unshift(newApp); // Add to beginning of list
@@ -217,18 +218,19 @@ app.put('/api/applications/:id', async (req, res) => {
 
     const updatedApp = {
       ...apps[idx],
-      company: req.body.company !== undefined ? req.body.company : apps[idx].company,
-      date: req.body.date !== undefined ? req.body.date : apps[idx].date,
-      role: req.body.role !== undefined ? req.body.role : apps[idx].role,
-      domain: req.body.domain !== undefined ? req.body.domain : apps[idx].domain,
-      region: req.body.region !== undefined ? req.body.region : apps[idx].region,
-      resume: req.body.resume !== undefined ? req.body.resume : apps[idx].resume,
-      status: req.body.status !== undefined ? req.body.status : apps[idx].status,
-      priority: req.body.priority !== undefined ? req.body.priority : apps[idx].priority,
-      next: req.body.next !== undefined ? req.body.next : apps[idx].next,
-      contact: req.body.contact !== undefined ? req.body.contact : apps[idx].contact,
-      link: req.body.link !== undefined ? req.body.link : apps[idx].link,
-      updatedAt: new Date().toISOString()
+      company:     req.body.company     !== undefined ? req.body.company     : apps[idx].company,
+      date:        req.body.date        !== undefined ? req.body.date        : apps[idx].date,
+      role:        req.body.role        !== undefined ? req.body.role        : apps[idx].role,
+      domain:      req.body.domain      !== undefined ? req.body.domain      : apps[idx].domain,
+      region:      req.body.region      !== undefined ? req.body.region      : apps[idx].region,
+      resume:      req.body.resume      !== undefined ? req.body.resume      : apps[idx].resume,
+      status:      req.body.status      !== undefined ? req.body.status      : apps[idx].status,
+      priority:    req.body.priority    !== undefined ? req.body.priority    : apps[idx].priority,
+      next:        req.body.next        !== undefined ? req.body.next        : apps[idx].next,
+      contactName: req.body.contactName !== undefined ? req.body.contactName : apps[idx].contactName,
+      contact:     req.body.contact     !== undefined ? req.body.contact     : apps[idx].contact,
+      link:        req.body.link        !== undefined ? req.body.link        : apps[idx].link,
+      updatedAt:   new Date().toISOString()
     };
 
     apps[idx] = updatedApp;

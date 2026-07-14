@@ -108,7 +108,10 @@ function renderTable() {
         </span>
       </td>
       <td>${priorityHTML(d.priority)}</td>
-      <td class="muted" style="max-width:140px;white-space:normal;font-size:0.8rem">${esc(d.contact) || '—'}</td>
+      <td class="muted" style="max-width:140px;white-space:normal;font-size:0.8rem">
+        ${d.contactName ? `<div style="font-weight:500;color:var(--text-sub)">${esc(d.contactName)}</div>` : ''}
+        ${esc(d.contact) || '—'}
+      </td>
       <td class="muted" style="max-width:160px;white-space:normal;font-size:0.8rem">
         ${d.link ? `<a href="${esc(d.link)}" target="_blank" style="color:var(--accent);font-size:0.8rem;display:block;margin-bottom:3px">View Job</a>` : ''}
         ${esc(d.next) || '—'}
@@ -165,18 +168,19 @@ function openModal(id = null) {
   if (id) {
     const d = data.find(x => x._id === id);
     if (d) {
-      document.getElementById('f-company').value  = d.company  || '';
-      document.getElementById('f-date').value     = d.date     || '';
-      document.getElementById('f-role').value     = d.role     || '';
-      document.getElementById('f-domain').value   = d.domain   || '';
-      document.getElementById('f-region').value   = d.region   || 'UAE';
-      document.getElementById('f-resume').value   = d.resume   || '';
-      document.getElementById('f-status').value   = d.status   || 'applied';
-      document.getElementById('f-priority').value = d.priority || 'medium';
-      document.getElementById('f-next').value     = d.next     || '';
-      document.getElementById('f-contact').value  = d.contact  || '';
-      document.getElementById('f-link').value     = d.link     || '';
-      document.getElementById('edit-id').value    = id;
+      document.getElementById('f-company').value       = d.company      || '';
+      document.getElementById('f-date').value          = d.date         || '';
+      document.getElementById('f-role').value          = d.role         || '';
+      document.getElementById('f-domain').value        = d.domain       || '';
+      document.getElementById('f-region').value        = d.region       || 'UAE';
+      document.getElementById('f-resume').value        = d.resume       || '';
+      document.getElementById('f-status').value        = d.status       || 'applied';
+      document.getElementById('f-priority').value      = d.priority     || 'medium';
+      document.getElementById('f-next').value          = d.next         || '';
+      document.getElementById('f-contact-name').value  = d.contactName  || '';
+      document.getElementById('f-contact').value       = d.contact      || '';
+      document.getElementById('f-link').value          = d.link         || '';
+      document.getElementById('edit-id').value         = id;
     }
   } else {
     document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
@@ -198,17 +202,18 @@ form.addEventListener('submit', async e => {
   e.preventDefault();
   const id = document.getElementById('edit-id').value;
   const entry = {
-    company:  document.getElementById('f-company').value.trim(),
-    date:     document.getElementById('f-date').value,
-    role:     document.getElementById('f-role').value,
-    domain:   document.getElementById('f-domain').value,
-    region:   document.getElementById('f-region').value,
-    resume:   document.getElementById('f-resume').value,
-    status:   document.getElementById('f-status').value,
-    priority: document.getElementById('f-priority').value,
-    next:     document.getElementById('f-next').value.trim(),
-    contact:  document.getElementById('f-contact').value.trim(),
-    link:     document.getElementById('f-link').value.trim(),
+    company:      document.getElementById('f-company').value.trim(),
+    date:         document.getElementById('f-date').value,
+    role:         document.getElementById('f-role').value,
+    domain:       document.getElementById('f-domain').value,
+    region:       document.getElementById('f-region').value,
+    resume:       document.getElementById('f-resume').value,
+    status:       document.getElementById('f-status').value,
+    priority:     document.getElementById('f-priority').value,
+    next:         document.getElementById('f-next').value.trim(),
+    contactName:  document.getElementById('f-contact-name').value.trim(),
+    contact:      document.getElementById('f-contact').value.trim(),
+    link:         document.getElementById('f-link').value.trim(),
   };
 
   try {
