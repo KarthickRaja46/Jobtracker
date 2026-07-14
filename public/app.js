@@ -75,9 +75,9 @@ function getFiltered() {
 }
 
 function priorityHTML(p) {
-  if (p === 'high')   return '<span class="priority-high">🔴 High</span>';
-  if (p === 'medium') return '<span class="priority-medium">🟡 Medium</span>';
-  return '<span class="priority-low">⚪ Low</span>';
+  if (p === 'high')   return '<span class="priority-high">High</span>';
+  if (p === 'medium') return '<span class="priority-medium">Medium</span>';
+  return '<span class="priority-low">Low</span>';
 }
 
 function renderTable() {
@@ -97,7 +97,7 @@ function renderTable() {
       <td class="muted">${d.date || '—'}</td>
       <td>
         <strong>${esc(d.company)}</strong>
-        ${d.link ? `<br><a href="${esc(d.link)}" target="_blank" style="color:var(--muted);font-size:0.75rem">🔗 View Job</a>` : ''}
+        ${d.link ? `<br><a href="${esc(d.link)}" target="_blank" style="color:var(--text-muted);font-size:0.78rem">View Job</a>` : ''}
       </td>
       <td>${esc(d.role) || '—'}</td>
       <td class="muted">${esc(d.domain) || '—'}</td>
@@ -113,8 +113,8 @@ function renderTable() {
       <td class="muted" style="max-width:180px;white-space:normal;font-size:0.8rem">${esc(d.next) || '—'}</td>
       <td>
         <div class="row-actions">
-          <button class="btn-icon edit" title="Edit" onclick="openEdit('${d._id}')">✏️</button>
-          <button class="btn-icon delete" title="Delete" onclick="deleteRow('${d._id}')">🗑️</button>
+          <button class="btn-icon edit" title="Edit" onclick="openEdit('${d._id}')">&#9998;</button>
+          <button class="btn-icon delete" title="Delete" onclick="deleteRow('${d._id}')">&#128465;</button>
         </div>
       </td>
     </tr>
@@ -226,7 +226,7 @@ form.addEventListener('submit', async e => {
 
     if (!res.ok) throw new Error('Failed to save application');
     
-    toast(id ? 'Application updated ✓' : 'Application added ✓', 'success');
+    toast(id ? 'Application updated.' : 'Application saved.', 'success');
     closeModal();
     load(); // Reload table data
   } catch (err) {
@@ -241,7 +241,7 @@ window.deleteRow = async function(id) {
   try {
     const res = await fetch(`${API_BASE}/applications/${id}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed to delete application');
-    toast('Application deleted', 'error');
+    toast('Application deleted.', 'error');
     load(); // Reload table data
   } catch (err) {
     toast('Error deleting: ' + err.message, 'error');
@@ -262,7 +262,7 @@ document.getElementById('btn-export-csv').addEventListener('click', () => {
   const a    = document.createElement('a'); a.href = url;
   a.download = `Job_Tracker_${new Date().toISOString().split('T')[0]}.csv`;
   a.click(); URL.revokeObjectURL(url);
-  toast('CSV exported ✓', 'success');
+  toast('CSV exported.', 'success');
 });
 
 /* ─── TOAST ─── */
@@ -270,7 +270,7 @@ function toast(msg, type = 'success') {
   const el   = document.getElementById('toast');
   const icon = document.getElementById('toast-icon');
   const text = document.getElementById('toast-msg');
-  icon.textContent = type === 'success' ? '✓' : '✕';
+  icon.textContent = type === 'success' ? '\u2713' : '\u2715';
   text.textContent = msg;
   el.className = `toast ${type} show`;
   setTimeout(() => el.classList.remove('show'), 3000);
@@ -283,11 +283,11 @@ function toast(msg, type = 'success') {
   function setTheme(theme) {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      themeIcon.textContent = '🌙';
+      themeIcon.innerHTML = '&#9790;';
       localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      themeIcon.textContent = '☀️';
+      themeIcon.innerHTML = '&#9728;';
       localStorage.setItem('theme', 'light');
     }
   }

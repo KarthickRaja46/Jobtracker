@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Karthick Raja | Job Application Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <title>Job Application Tracker — Karthick Raja</title>
+  <meta name="description" content="Personal job application tracker for Karthick Raja — Data and BI Analyst roles." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,25 +13,23 @@
   <!-- HEADER -->
   <header>
     <div class="header-left">
-      <h1>🎯 Job Application Tracker</h1>
-      <p>Karthick Raja &nbsp;·&nbsp; Data / BI Analyst &nbsp;·&nbsp; Power BI Developer</p>
+      <h1>Job Application Tracker</h1>
+      <p>Karthick Raja &nbsp;&middot;&nbsp; Data / BI Analyst &nbsp;&middot;&nbsp; Power BI Developer</p>
     </div>
     <div class="header-right">
-      <button id="theme-toggle" class="btn-theme-toggle" title="Toggle Light/Dark Mode">
-        <span class="theme-icon">☀️</span>
+      <button id="theme-toggle" class="btn-theme" title="Toggle theme">
+        <span class="theme-icon">&#9728;</span>
       </button>
-      <button id="btn-add">＋ &nbsp;Add Application</button>
+      <button id="btn-add" class="btn-primary">+ Add Application</button>
     </div>
   </header>
 
   <!-- STATS -->
-  <div class="stats-grid" id="stats">
-    <!-- Rendered dynamically -->
-  </div>
+  <div class="stats-grid" id="stats"></div>
 
   <!-- TOOLBAR -->
   <div class="toolbar">
-    <input type="text" id="search" placeholder="🔍  Search by company, role, or domain…" />
+    <input type="text" id="search" placeholder="Search company, role, or domain..." />
     <select class="filter-select" id="filter-status">
       <option value="">All Statuses</option>
       <option value="applied">Applied</option>
@@ -48,7 +47,7 @@
       <option value="Remote">Remote</option>
       <option value="Other">Other</option>
     </select>
-    <button class="btn-export" id="btn-export-csv">⬇ Export CSV</button>
+    <button class="btn-outline" id="btn-export-csv">Export CSV</button>
   </div>
 
   <!-- TABLE -->
@@ -56,25 +55,21 @@
     <table id="main-table">
       <thead>
         <tr>
-          <th data-col="date">Date <span class="sort-icon">↕</span></th>
-          <th data-col="company">Company <span class="sort-icon">↕</span></th>
-          <th data-col="role">Role <span class="sort-icon">↕</span></th>
+          <th data-col="date">Date <span class="sort-icon">&#8597;</span></th>
+          <th data-col="company">Company <span class="sort-icon">&#8597;</span></th>
+          <th data-col="role">Role <span class="sort-icon">&#8597;</span></th>
           <th data-col="domain">Domain</th>
           <th data-col="region">Region</th>
-          <th data-col="resume">Resume Used</th>
-          <th data-col="status">Status <span class="sort-icon">↕</span></th>
+          <th data-col="status">Status <span class="sort-icon">&#8597;</span></th>
           <th data-col="priority">Priority</th>
           <th data-col="next">Next Steps</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="table-body">
-        <!-- Rendered dynamically -->
-      </tbody>
+      <tbody id="table-body"></tbody>
     </table>
     <div id="empty-state" class="empty" style="display:none">
-      <div class="empty-icon">📋</div>
-      <h3>No applications yet</h3>
+      <p class="empty-title">No applications found</p>
       <p>Click <strong>Add Application</strong> to log your first job application.</p>
     </div>
   </div>
@@ -83,8 +78,8 @@
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-header">
-        <div class="modal-title" id="modal-title">Add Application</div>
-        <button class="btn-close" id="btn-close">✕</button>
+        <span class="modal-title" id="modal-title">Add Application</span>
+        <button class="btn-close" id="btn-close" aria-label="Close">&times;</button>
       </div>
       <form id="app-form" autocomplete="off">
         <input type="hidden" id="edit-id" />
@@ -98,9 +93,9 @@
             <input type="date" id="f-date" required />
           </div>
           <div class="form-group">
-            <label for="f-role">Role Applied For *</label>
+            <label for="f-role">Role *</label>
             <select id="f-role" required>
-              <option value="">— Select Role —</option>
+              <option value="">Select Role</option>
               <option>BI Analyst</option>
               <option>Data Analyst</option>
               <option>Power BI Developer</option>
@@ -112,13 +107,13 @@
           <div class="form-group">
             <label for="f-domain">Industry / Domain</label>
             <select id="f-domain">
-              <option value="">— Select Domain —</option>
-              <option>Banking & Finance</option>
+              <option value="">Select Domain</option>
+              <option>Banking &amp; Finance</option>
               <option>Healthcare</option>
-              <option>Manufacturing & IoT</option>
+              <option>Manufacturing &amp; IoT</option>
               <option>Generic Business</option>
-              <option>Oil & Gas</option>
-              <option>Retail & E-Commerce</option>
+              <option>Oil &amp; Gas</option>
+              <option>Retail &amp; E-Commerce</option>
               <option>Telecom</option>
               <option>Other</option>
             </select>
@@ -135,7 +130,7 @@
           <div class="form-group">
             <label for="f-resume">Resume Used</label>
             <select id="f-resume">
-              <option value="">— Select Resume —</option>
+              <option value="">Select Resume</option>
               <option>Karthick_Raja_BI_Analyst.docx</option>
               <option>Karthick_Raja_Data_Analyst.docx</option>
               <option>Karthick_Raja_Power_BI_Developer.docx</option>
@@ -156,27 +151,27 @@
           <div class="form-group">
             <label for="f-priority">Priority</label>
             <select id="f-priority">
-              <option value="high">🔴 High</option>
-              <option value="medium" selected>🟡 Medium</option>
-              <option value="low">⚪ Low</option>
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
             </select>
           </div>
           <div class="form-group full">
             <label for="f-next">Next Steps / Notes</label>
-            <textarea id="f-next" placeholder="e.g. Follow up in 7 days, Prepare SQL interview questions…"></textarea>
+            <textarea id="f-next" placeholder="e.g. Follow up in 7 days, prepare SQL interview questions..."></textarea>
           </div>
           <div class="form-group">
             <label for="f-contact">Recruiter / Contact</label>
             <input type="text" id="f-contact" placeholder="Name or email" />
           </div>
           <div class="form-group">
-            <label for="f-link">Job Link / Portal</label>
-            <input type="url" id="f-link" placeholder="https://linkedin.com/jobs/…" />
+            <label for="f-link">Job Link</label>
+            <input type="url" id="f-link" placeholder="https://linkedin.com/jobs/..." />
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-cancel" id="btn-cancel">Cancel</button>
-          <button type="submit" class="btn-save" id="btn-save">Save Application</button>
+          <button type="button" class="btn-outline" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-primary" id="btn-save">Save Application</button>
         </div>
       </form>
     </div>
