@@ -49,7 +49,6 @@ function renderStats() {
     { cls: 'rejected',  label: 'Rejected',          value: rejected },
   ];
 
-  const total = data.length;
   document.getElementById('stats').innerHTML = cards.map(c => {
     const pct = total > 0 ? Math.round((c.value / total) * 100) : 0;
     const fillPct = c.cls === 'total' ? 100 : pct;
