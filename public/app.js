@@ -97,12 +97,10 @@ function renderTable() {
       <td class="muted">${d.date || '—'}</td>
       <td>
         <strong>${esc(d.company)}</strong>
-        ${d.link ? `<br><a href="${esc(d.link)}" target="_blank" style="color:var(--text-muted);font-size:0.78rem">View Job</a>` : ''}
       </td>
       <td>${esc(d.role) || '—'}</td>
       <td class="muted">${esc(d.domain) || '—'}</td>
       <td class="muted">${esc(d.region) || '—'}</td>
-      <td>${d.resume ? `<span class="resume-chip">${esc(d.resume)}</span>` : '<span class="muted">—</span>'}</td>
       <td>
         <span class="badge ${d.status}">
           <span class="badge-dot"></span>
@@ -110,7 +108,11 @@ function renderTable() {
         </span>
       </td>
       <td>${priorityHTML(d.priority)}</td>
-      <td class="muted" style="max-width:180px;white-space:normal;font-size:0.8rem">${esc(d.next) || '—'}</td>
+      <td class="muted" style="max-width:140px;white-space:normal;font-size:0.8rem">${esc(d.contact) || '—'}</td>
+      <td class="muted" style="max-width:160px;white-space:normal;font-size:0.8rem">
+        ${d.link ? `<a href="${esc(d.link)}" target="_blank" style="color:var(--accent);font-size:0.8rem;display:block;margin-bottom:3px">View Job</a>` : ''}
+        ${esc(d.next) || '—'}
+      </td>
       <td>
         <div class="row-actions">
           <button class="btn-icon edit" title="Edit" onclick="openEdit('${d._id}')">&#9998;</button>

@@ -33,17 +33,17 @@
 }
 
 html.dark {
-  --bg:           #0f1117;
-  --surface:      #181c26;
-  --card:         #1e2230;
-  --border:       #2c3244;
-  --border-focus: #5b8df7;
-  --accent:       #5b8df7;
-  --accent-hover: #4a7df6;
-  --accent-muted: rgba(91, 141, 247, 0.15);
-  --text:         #f1f3f7;
-  --text-sub:     #9aa3b2;
-  --text-muted:   #5e6a7d;
+  --bg:           #252836;
+  --surface:      #2e3147;
+  --card:         #2a2d3e;
+  --border:       #3c3f56;
+  --border-focus: #6b8ff8;
+  --accent:       #6b8ff8;
+  --accent-hover: #5a7ef7;
+  --accent-muted: rgba(107, 143, 248, 0.15);
+  --text:         #e8eaf0;
+  --text-sub:     #a0a8bc;
+  --text-muted:   #6e7a94;
 
   --status-applied-bg:    rgba(59,130,246,0.12);  --status-applied-text:    #60a5fa;
   --status-screening-bg:  rgba(245,158,11,0.12);  --status-screening-text:  #fbbf24;
