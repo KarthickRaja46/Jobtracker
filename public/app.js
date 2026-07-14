@@ -49,12 +49,16 @@ function renderStats() {
     { cls: 'rejected',  label: 'Rejected',          value: rejected },
   ];
 
-  document.getElementById('stats').innerHTML = cards.map(c =>
-    `<div class="stat-card ${c.cls}">
+  const total = data.length;
+  document.getElementById('stats').innerHTML = cards.map(c => {
+    const pct = total > 0 ? Math.round((c.value / total) * 100) : 0;
+    const fillPct = c.cls === 'total' ? 100 : pct;
+    return `<div class="stat-card ${c.cls}">
       <div class="stat-label">${c.label}</div>
       <div class="stat-value">${c.value}</div>
-    </div>`
-  ).join('');
+      <div class="stat-progress"><div class="stat-progress-fill" style="width:${fillPct}%"></div></div>
+    </div>`;
+  }).join('');
 }
 
 /* ─── FILTER / SEARCH / SORT ─── */
@@ -87,21 +91,26 @@ function renderTable() {
 
   if (!rows.length) {
     tbody.innerHTML = '';
+    const hasFilters = searchQ || filterStatus || filterRegion;
+    document.querySelector('#empty-state p:last-child').innerHTML = hasFilters
+      ? `No results match your filters. <a href="#" onclick="clearFilters();return false;" style="color:var(--accent)">Clear filters</a>`
+      : 'Click <strong>Add Application</strong> to log your first job application.';
     empty.style.display = '';
     return;
   }
   empty.style.display = 'none';
 
-  tbody.innerHTML = rows.map(d => `
-    <tr class="row-status-${d.status}">
+  tbody.innerHTML = rows.map(d => {
+    const daysAgo = d.date ? Math.floor((Date.now() - new Date(d.date)) / 86400000) : 0;
+    const isStale = daysAgo > 14 && !d.followupDate && !['accepted','rejected','ghosted'].includes(d.status);
+    return `
+    <tr class="row-status-${d.status}${isStale ? ' row-stale' : ''}">
       <td class="muted">${d.date || '—'}</td>
-      <td class="days-ago">${daysSince(d.date)}</td>
-      <td>
-        <strong>${esc(d.company)}</strong>
-      </td>
+      <td class="days-ago${isStale ? ' stale-days' : ''}">${daysSince(d.date)}</td>
+      <td><strong>${esc(d.company)}</strong></td>
       <td>${esc(d.role) || '—'}</td>
-      <td class="muted">${esc(d.domain) || '—'}</td>
-      <td class="muted">${esc(d.region) || '—'}</td>
+      <td class="muted col-optional">${esc(d.domain) || '—'}</td>
+      <td class="muted col-optional">${esc(d.region) || '—'}</td>
       <td>
         <span class="badge ${d.status} badge-clickable" onclick="cycleStatus('${d._id}')" title="Click to advance status">
           <span class="badge-dot"></span>
@@ -109,23 +118,23 @@ function renderTable() {
         </span>
       </td>
       <td>${priorityHTML(d.priority)}</td>
-      <td class="muted" style="max-width:140px;white-space:normal;font-size:0.8rem">
+      <td class="muted col-optional" style="max-width:140px;white-space:normal;font-size:0.8rem">
         ${d.contactName ? `<div style="font-weight:500;color:var(--text-sub)">${esc(d.contactName)}</div>` : ''}
         ${esc(d.contact) || '—'}
       </td>
-      <td class="muted" style="max-width:160px;white-space:normal;font-size:0.8rem">
+      <td class="muted col-optional" style="max-width:160px;white-space:normal;font-size:0.8rem">
         ${d.link ? `<a href="${esc(d.link)}" target="_blank" style="color:var(--accent);font-size:0.8rem;display:block;margin-bottom:3px">View Job</a>` : ''}
         ${esc(d.next) || '—'}
       </td>
-      <td class="muted" style="font-size:0.8rem;white-space:nowrap">${d.followupDate || '—'}</td>
+      <td class="muted col-optional" style="font-size:0.8rem;white-space:nowrap">${d.followupDate || '—'}</td>
       <td>
         <div class="row-actions">
           <button class="btn-icon edit" title="Edit" onclick="openEdit('${d._id}')">&#9998;</button>
           <button class="btn-icon delete" title="Delete" onclick="deleteRow('${d._id}')">&#128465;</button>
         </div>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
 
   // Update sort headers styling
   document.querySelectorAll('thead th').forEach(th => {
@@ -150,7 +159,37 @@ function daysSince(dateStr) {
 }
 
 /* ─── RENDER ALL ─── */
-function render() { renderStats(); renderTable(); }
+function render() { renderStats(); renderTable(); renderWeeklySummary(); }
+
+/* ─── WEEKLY SUMMARY ─── */
+function renderWeeklySummary() {
+  const el = document.getElementById('weekly-summary');
+  if (!el || !data.length) { if (el) el.innerHTML = ''; return; }
+  const today = new Date();
+  const weekStart = new Date(today); weekStart.setDate(today.getDate() - 7);
+  const appliedThisWeek = data.filter(d => new Date(d.date) >= weekStart).length;
+  const interviewing = data.filter(d => d.status === 'interview').length;
+  const followupsDue = data.filter(d => {
+    if (!d.followupDate) return false;
+    if (['rejected','accepted','ghosted'].includes(d.status)) return false;
+    return new Date(d.followupDate) <= today;
+  }).length;
+  el.innerHTML =
+    `This week: <span class="ws-num">${appliedThisWeek}</span> applied` +
+    `<span class="ws-sep">&middot;</span>` +
+    `<span class="ws-num">${interviewing}</span> interviewing` +
+    `<span class="ws-sep">&middot;</span>` +
+    `<span class="${followupsDue > 0 ? 'ws-followup' : ''}">${followupsDue} follow-up${followupsDue !== 1 ? 's' : ''} due</span>`;
+}
+
+/* ─── CLEAR FILTERS ─── */
+function clearFilters() {
+  searchQ = ''; filterStatus = ''; filterRegion = '';
+  document.getElementById('search').value = '';
+  document.getElementById('filter-status').value = '';
+  document.getElementById('filter-region').value = '';
+  renderTable();
+}
 
 /* ─── SORT ─── */
 document.querySelectorAll('thead th[data-col]').forEach(th => {
@@ -166,11 +205,27 @@ document.getElementById('search').addEventListener('input', e => { searchQ = e.t
 document.getElementById('filter-status').addEventListener('change', e => { filterStatus = e.target.value; renderTable(); });
 document.getElementById('filter-region').addEventListener('change', e => { filterRegion = e.target.value; renderTable(); });
 
+/* ─── KEYBOARD SHORTCUTS ─── */
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement.tagName;
+  if (['INPUT','TEXTAREA','SELECT'].includes(tag)) return;
+  if ((e.key === 'n' || e.key === 'N') && !overlay.classList.contains('open')) openModal();
+  if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+});
+
+/* ─── COLUMN TOGGLE ─── */
+document.getElementById('btn-toggle-cols').addEventListener('click', () => {
+  document.getElementById('main-table').classList.toggle('show-all-cols');
+});
+
 /* ─── MODAL ─── */
 const overlay = document.getElementById('modal-overlay');
 const form    = document.getElementById('app-form');
+let formDirty = false;
+form.addEventListener('input', () => { formDirty = true; });
 
 function openModal(id = null) {
+  formDirty = false;
   editId = id;
   document.getElementById('modal-title').textContent = id ? 'Edit Application' : 'Add Application';
   form.reset();
@@ -193,14 +248,33 @@ function openModal(id = null) {
       document.getElementById('f-contact').value       = d.contact      || '';
       document.getElementById('f-link').value          = d.link         || '';
       document.getElementById('edit-id').value         = id;
+      // Show status history
+      const histSec  = document.getElementById('status-history-section');
+      const histList = document.getElementById('status-history-list');
+      if (d.statusHistory && d.statusHistory.length > 1) {
+        histList.innerHTML = d.statusHistory.map((h, i) => {
+          const dt = new Date(h.at).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+          return (i > 0 ? '<span class="history-arrow">&rarr;</span>' : '') +
+            `<span class="badge ${h.status}" style="font-size:0.72rem;padding:2px 8px">${STATUS_LABELS[h.status] || h.status} <span style="opacity:0.6;font-size:0.68rem">${dt}</span></span>`;
+        }).join('');
+        histSec.style.display = '';
+      } else {
+        histSec.style.display = 'none';
+      }
     }
   } else {
     document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('status-history-section').style.display = 'none';
   }
   overlay.classList.add('open');
 }
 
-function closeModal() { overlay.classList.remove('open'); editId = null; }
+function closeModal() {
+  if (formDirty && !confirm('You have unsaved changes. Discard them?')) return;
+  overlay.classList.remove('open');
+  editId = null;
+  formDirty = false;
+}
 
 document.getElementById('btn-add').addEventListener('click', () => openModal());
 document.getElementById('btn-close').addEventListener('click', closeModal);
@@ -293,10 +367,11 @@ window.cycleStatus = async function(id) {
 
 /* ─── CSV EXPORT ─── */
 document.getElementById('btn-export-csv').addEventListener('click', () => {
-  const headers = ['Date','Company','Role','Domain','Region','Resume','Status','Priority','Next Steps','Contact','Link'];
+  const headers = ['Date','Days Since Applied','Company','Role','Domain','Region','Status','Priority','Contact Name','Contact','Next Steps','Follow-up Date','Job Link'];
   const rows = data.map(d => [
-    d.date, d.company, d.role, d.domain, d.region, d.resume,
-    STATUS_LABELS[d.status] || d.status, d.priority, d.next, d.contact, d.link
+    d.date, daysSince(d.date), d.company, d.role, d.domain, d.region,
+    STATUS_LABELS[d.status] || d.status, d.priority,
+    d.contactName, d.contact, d.next, d.followupDate, d.link
   ].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });

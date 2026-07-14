@@ -24,6 +24,9 @@
     </div>
   </header>
 
+  <!-- WEEKLY SUMMARY -->
+  <div class="weekly-summary" id="weekly-summary"></div>
+
   <!-- STATS -->
   <div class="stats-grid" id="stats"></div>
 
@@ -48,6 +51,7 @@
       <option value="Other">Other</option>
     </select>
     <button class="btn-outline" id="btn-export-csv">Export CSV</button>
+    <button class="btn-outline" id="btn-toggle-cols" title="Show/hide optional columns">Columns</button>
   </div>
 
   <!-- TABLE -->
@@ -59,8 +63,8 @@
           <th data-col="days">Days</th>
           <th data-col="company">Company <span class="sort-icon">&#8597;</span></th>
           <th data-col="role">Role <span class="sort-icon">&#8597;</span></th>
-          <th data-col="domain">Domain</th>
-          <th data-col="region">Region</th>
+          <th data-col="domain" class="col-optional">Domain</th>
+          <th data-col="region" class="col-optional">Region</th>
           <th data-col="status">Status <span class="sort-icon">&#8597;</span></th>
           <th data-col="priority">Priority</th>
           <th data-col="contact">Contact</th>
@@ -178,6 +182,10 @@
           <div class="form-group full">
             <label for="f-link">Job Link</label>
             <input type="url" id="f-link" placeholder="https://linkedin.com/jobs/..." />
+          </div>
+          <div id="status-history-section" style="display:none" class="form-group full">
+            <label>Status History</label>
+            <div id="status-history-list" class="history-list"></div>
           </div>
         </div>
         <div class="modal-footer">

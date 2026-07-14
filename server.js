@@ -194,6 +194,7 @@ app.post('/api/applications', async (req, res) => {
       contactName: req.body.contactName || '',
       contact:     req.body.contact     || '',
       link:        req.body.link        || '',
+      statusHistory: [{ status: req.body.status || 'applied', at: new Date().toISOString() }],
       createdAt:   new Date().toISOString(),
       updatedAt:   new Date().toISOString()
     };
@@ -232,6 +233,14 @@ app.put('/api/applications/:id', async (req, res) => {
       contactName: req.body.contactName !== undefined ? req.body.contactName : apps[idx].contactName,
       contact:     req.body.contact     !== undefined ? req.body.contact     : apps[idx].contact,
       link:        req.body.link        !== undefined ? req.body.link        : apps[idx].link,
+      statusHistory: (() => {
+        const existing = apps[idx].statusHistory || [{ status: apps[idx].status, at: apps[idx].createdAt || new Date().toISOString() }];
+        const newStatus = req.body.status !== undefined ? req.body.status : apps[idx].status;
+        if (newStatus !== apps[idx].status) {
+          return [...existing, { status: newStatus, at: new Date().toISOString() }];
+        }
+        return existing;
+      })(),
       updatedAt:   new Date().toISOString()
     };
 

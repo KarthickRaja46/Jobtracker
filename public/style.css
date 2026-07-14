@@ -178,11 +178,43 @@ header {
   margin-top: 4px;
   line-height: 1;
 }
+.stat-progress {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.stat-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+.stat-card.total     .stat-progress-fill { background: var(--accent); }
+.stat-card.active    .stat-progress-fill { background: var(--status-applied-dot); }
+.stat-card.interview .stat-progress-fill { background: var(--status-interview-dot); }
+.stat-card.offer     .stat-progress-fill { background: var(--status-offer-dot); }
+.stat-card.rejected  .stat-progress-fill { background: var(--status-rejected-dot); }
 .stat-card.total     { border-top: 3px solid var(--accent); }
 .stat-card.active    { border-top: 3px solid var(--status-applied-dot); }
 .stat-card.interview { border-top: 3px solid var(--status-interview-dot); }
 .stat-card.offer     { border-top: 3px solid var(--status-offer-dot); }
 .stat-card.rejected  { border-top: 3px solid var(--status-rejected-dot); }
+
+/* ── WEEKLY SUMMARY ── */
+.weekly-summary {
+  padding: 12px 32px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  flex-wrap: wrap;
+  min-height: 32px;
+}
+.ws-sep { color: var(--border); margin: 0 4px; }
+.ws-num { font-weight: 700; color: var(--text); }
+.ws-followup { color: var(--priority-medium); font-weight: 600; }
 
 /* ── TOOLBAR ── */
 .toolbar {
@@ -320,6 +352,23 @@ tbody tr.row-status-accepted:hover  { background: rgba(16, 185, 129, 0.09); }
 tbody tr.row-status-offer:hover     { background: rgba(34, 197, 94,  0.10); }
 tbody tr.row-status-rejected:hover  { background: rgba(239, 68,  68,  0.08); }
 tbody tr.row-status-interview:hover { background: rgba(139, 92,  246, 0.07); }
+
+/* ── STALE ROW ── */
+tbody tr.row-stale { border-left: 3px solid #f59e0b !important; }
+.stale-days { color: #d97706 !important; font-weight: 600; }
+
+/* ── STATUS HISTORY ── */
+.history-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0 4px;
+}
+.history-arrow { color: var(--text-muted); font-size: 0.8rem; }
+
+/* ── COL OPTIONAL ── */
+.col-optional { transition: opacity 0.15s; }
 
 /* ── CLICKABLE BADGE ── */
 .badge-clickable {
@@ -507,6 +556,7 @@ label {
 /* ── MOBILE ── */
 @media (max-width: 768px) {
   header, .toolbar, .table-wrap { padding-left: 16px; padding-right: 16px; }
+  .weekly-summary { padding-left: 16px; padding-right: 16px; }
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     padding-left: 16px;
@@ -517,6 +567,14 @@ label {
   .form-group.full { grid-column: auto; }
   .modal { padding: 20px; }
   .header-left p { display: none; }
+  /* Hide optional columns by default on mobile */
+  .col-optional { display: none; }
+  table.show-all-cols .col-optional { display: table-cell; }
+  #btn-toggle-cols { display: inline-flex; }
+}
+
+@media (min-width: 769px) {
+  #btn-toggle-cols { display: none; }
 }
 
 @media (max-width: 480px) {
