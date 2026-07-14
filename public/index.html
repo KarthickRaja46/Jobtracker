@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karthick Raja | Job Application Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <h1>🎯 Job Application Tracker</h1>
+      <p>Karthick Raja &nbsp;·&nbsp; Data / BI Analyst &nbsp;·&nbsp; Power BI Developer</p>
+    </div>
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme-toggle" title="Toggle Light/Dark Mode">
+        <span class="theme-icon">☀️</span>
+      </button>
+      <button id="btn-add">＋ &nbsp;Add Application</button>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-grid" id="stats">
+    <!-- Rendered dynamically -->
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="🔍  Search by company, role, or domain…" />
+    <select class="filter-select" id="filter-status">
+      <option value="">All Statuses</option>
+      <option value="applied">Applied</option>
+      <option value="screening">Phone Screening</option>
+      <option value="interview">Interviewing</option>
+      <option value="offer">Offer Received</option>
+      <option value="accepted">Accepted</option>
+      <option value="rejected">Rejected</option>
+      <option value="ghosted">Ghosted</option>
+    </select>
+    <select class="filter-select" id="filter-region">
+      <option value="">All Regions</option>
+      <option value="UAE">UAE</option>
+      <option value="India">India</option>
+      <option value="Remote">Remote</option>
+      <option value="Other">Other</option>
+    </select>
+    <button class="btn-export" id="btn-export-csv">⬇ Export CSV</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th data-col="date">Date <span class="sort-icon">↕</span></th>
+          <th data-col="company">Company <span class="sort-icon">↕</span></th>
+          <th data-col="role">Role <span class="sort-icon">↕</span></th>
+          <th data-col="domain">Domain</th>
+          <th data-col="region">Region</th>
+          <th data-col="resume">Resume Used</th>
+          <th data-col="status">Status <span class="sort-icon">↕</span></th>
+          <th data-col="priority">Priority</th>
+          <th data-col="next">Next Steps</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+    <div id="empty-state" class="empty" style="display:none">
+      <div class="empty-icon">📋</div>
+      <h3>No applications yet</h3>
+      <p>Click <strong>Add Application</strong> to log your first job application.</p>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Add Application</div>
+        <button class="btn-close" id="btn-close">✕</button>
+      </div>
+      <form id="app-form" autocomplete="off">
+        <input type="hidden" id="edit-id" />
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="f-company">Company *</label>
+            <input type="text" id="f-company" placeholder="e.g. Emirates NBD" required />
+          </div>
+          <div class="form-group">
+            <label for="f-date">Applied Date *</label>
+            <input type="date" id="f-date" required />
+          </div>
+          <div class="form-group">
+            <label for="f-role">Role Applied For *</label>
+            <select id="f-role" required>
+              <option value="">— Select Role —</option>
+              <option>BI Analyst</option>
+              <option>Data Analyst</option>
+              <option>Power BI Developer</option>
+              <option>Data Engineer</option>
+              <option>Business Analyst</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-domain">Industry / Domain</label>
+            <select id="f-domain">
+              <option value="">— Select Domain —</option>
+              <option>Banking & Finance</option>
+              <option>Healthcare</option>
+              <option>Manufacturing & IoT</option>
+              <option>Generic Business</option>
+              <option>Oil & Gas</option>
+              <option>Retail & E-Commerce</option>
+              <option>Telecom</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-region">Region</label>
+            <select id="f-region">
+              <option value="UAE">UAE</option>
+              <option value="India">India</option>
+              <option value="Remote">Remote</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-resume">Resume Used</label>
+            <select id="f-resume">
+              <option value="">— Select Resume —</option>
+              <option>Karthick_Raja_BI_Analyst.docx</option>
+              <option>Karthick_Raja_Data_Analyst.docx</option>
+              <option>Karthick_Raja_Power_BI_Developer.docx</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-status">Status *</label>
+            <select id="f-status" required>
+              <option value="applied">Applied</option>
+              <option value="screening">Phone Screening</option>
+              <option value="interview">Interviewing</option>
+              <option value="offer">Offer Received</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+              <option value="ghosted">Ghosted</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-priority">Priority</label>
+            <select id="f-priority">
+              <option value="high">🔴 High</option>
+              <option value="medium" selected>🟡 Medium</option>
+              <option value="low">⚪ Low</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="f-next">Next Steps / Notes</label>
+            <textarea id="f-next" placeholder="e.g. Follow up in 7 days, Prepare SQL interview questions…"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="f-contact">Recruiter / Contact</label>
+            <input type="text" id="f-contact" placeholder="Name or email" />
+          </div>
+          <div class="form-group">
+            <label for="f-link">Job Link / Portal</label>
+            <input type="url" id="f-link" placeholder="https://linkedin.com/jobs/…" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-save" id="btn-save">Save Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span class="toast-icon" id="toast-icon"></span>
+    <span id="toast-msg"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
