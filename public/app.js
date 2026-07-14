@@ -93,8 +93,9 @@ function renderTable() {
   empty.style.display = 'none';
 
   tbody.innerHTML = rows.map(d => `
-    <tr>
+    <tr class="row-status-${d.status}">
       <td class="muted">${d.date || '—'}</td>
+      <td class="days-ago">${daysSince(d.date)}</td>
       <td>
         <strong>${esc(d.company)}</strong>
       </td>
@@ -102,7 +103,7 @@ function renderTable() {
       <td class="muted">${esc(d.domain) || '—'}</td>
       <td class="muted">${esc(d.region) || '—'}</td>
       <td>
-        <span class="badge ${d.status}">
+        <span class="badge ${d.status} badge-clickable" onclick="cycleStatus('${d._id}')" title="Click to advance status">
           <span class="badge-dot"></span>
           ${STATUS_LABELS[d.status] || d.status}
         </span>
@@ -116,6 +117,7 @@ function renderTable() {
         ${d.link ? `<a href="${esc(d.link)}" target="_blank" style="color:var(--accent);font-size:0.8rem;display:block;margin-bottom:3px">View Job</a>` : ''}
         ${esc(d.next) || '—'}
       </td>
+      <td class="muted" style="font-size:0.8rem;white-space:nowrap">${d.followupDate || '—'}</td>
       <td>
         <div class="row-actions">
           <button class="btn-icon edit" title="Edit" onclick="openEdit('${d._id}')">&#9998;</button>
@@ -136,6 +138,15 @@ function renderTable() {
 
 function esc(s = '') {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function daysSince(dateStr) {
+  if (!dateStr) return '—';
+  const days = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
+  if (days < 0)  return 'Future';
+  if (days === 0) return 'Today';
+  if (days === 1) return '1 day';
+  return `${days} days`;
 }
 
 /* ─── RENDER ALL ─── */
@@ -177,6 +188,7 @@ function openModal(id = null) {
       document.getElementById('f-status').value        = d.status       || 'applied';
       document.getElementById('f-priority').value      = d.priority     || 'medium';
       document.getElementById('f-next').value          = d.next         || '';
+      document.getElementById('f-followup').value      = d.followupDate || '';
       document.getElementById('f-contact-name').value  = d.contactName  || '';
       document.getElementById('f-contact').value       = d.contact      || '';
       document.getElementById('f-link').value          = d.link         || '';
@@ -211,6 +223,7 @@ form.addEventListener('submit', async e => {
     status:       document.getElementById('f-status').value,
     priority:     document.getElementById('f-priority').value,
     next:         document.getElementById('f-next').value.trim(),
+    followupDate: document.getElementById('f-followup').value,
     contactName:  document.getElementById('f-contact-name').value.trim(),
     contact:      document.getElementById('f-contact').value.trim(),
     link:         document.getElementById('f-link').value.trim(),
@@ -253,6 +266,28 @@ window.deleteRow = async function(id) {
   } catch (err) {
     toast('Error deleting: ' + err.message, 'error');
     console.error(err);
+  }
+};
+
+/* ─── STATUS CYCLE (click badge to advance) ─── */
+const STATUS_CYCLE = ['applied', 'screening', 'interview', 'offer', 'accepted', 'rejected', 'ghosted'];
+
+window.cycleStatus = async function(id) {
+  const app = data.find(x => x._id === id);
+  if (!app) return;
+  const idx = STATUS_CYCLE.indexOf(app.status);
+  const nextStatus = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length];
+  try {
+    const res = await fetch(`${API_BASE}/applications/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...app, status: nextStatus })
+    });
+    if (!res.ok) throw new Error('Failed to update status');
+    toast(`Status updated: ${STATUS_LABELS[nextStatus]}`, 'success');
+    load();
+  } catch(err) {
+    toast('Error: ' + err.message, 'error');
   }
 };
 

@@ -56,6 +56,7 @@
       <thead>
         <tr>
           <th data-col="date">Date <span class="sort-icon">&#8597;</span></th>
+          <th data-col="days">Days</th>
           <th data-col="company">Company <span class="sort-icon">&#8597;</span></th>
           <th data-col="role">Role <span class="sort-icon">&#8597;</span></th>
           <th data-col="domain">Domain</th>
@@ -64,6 +65,7 @@
           <th data-col="priority">Priority</th>
           <th data-col="contact">Contact</th>
           <th data-col="next">Next Steps</th>
+          <th data-col="followupDate">Follow-up <span class="sort-icon">&#8597;</span></th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -160,6 +162,10 @@
           <div class="form-group full">
             <label for="f-next">Next Steps / Notes</label>
             <textarea id="f-next" placeholder="e.g. Follow up in 7 days, prepare SQL interview questions..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="f-followup">Follow-up Date</label>
+            <input type="date" id="f-followup" />
           </div>
           <div class="form-group">
             <label for="f-contact-name">Contact Name</label>

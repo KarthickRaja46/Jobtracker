@@ -311,6 +311,32 @@ tbody td.muted { color: var(--text-muted); font-size: 0.8rem; }
 .priority-medium { color: var(--priority-medium); font-weight: 600; }
 .priority-low    { color: var(--priority-low);    font-weight: 500; }
 
+/* ── ROW STATUS TINTS ── */
+tbody tr.row-status-accepted  { background: rgba(16, 185, 129, 0.05); }
+tbody tr.row-status-offer     { background: rgba(34, 197, 94,  0.06); }
+tbody tr.row-status-rejected  { background: rgba(239, 68,  68,  0.05); }
+tbody tr.row-status-interview { background: rgba(139, 92,  246, 0.04); }
+tbody tr.row-status-accepted:hover  { background: rgba(16, 185, 129, 0.09); }
+tbody tr.row-status-offer:hover     { background: rgba(34, 197, 94,  0.10); }
+tbody tr.row-status-rejected:hover  { background: rgba(239, 68,  68,  0.08); }
+tbody tr.row-status-interview:hover { background: rgba(139, 92,  246, 0.07); }
+
+/* ── CLICKABLE BADGE ── */
+.badge-clickable {
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  user-select: none;
+}
+.badge-clickable:hover { opacity: 0.78; transform: scale(1.05); }
+
+/* ── DAYS AGO CELL ── */
+.days-ago {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── ROW ACTIONS ── */
 .row-actions { display: flex; gap: 6px; }
 .btn-icon {
