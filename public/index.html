@@ -197,6 +197,22 @@
     </div>
   </div>
 
+  <!-- CONFIRM MODAL -->
+  <div class="modal-overlay" id="confirm-overlay" style="z-index: 2000;">
+    <div class="modal" style="max-width: 400px;" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <span class="modal-title" id="confirm-title">Confirm</span>
+      </div>
+      <div style="padding: 16px 32px 24px;">
+        <p id="confirm-message" style="color: var(--text);"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-outline" id="btn-confirm-cancel">Cancel</button>
+        <button type="button" class="btn-primary" id="btn-confirm-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast">
     <span class="toast-icon" id="toast-icon"></span>

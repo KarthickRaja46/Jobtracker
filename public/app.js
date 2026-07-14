@@ -217,6 +217,59 @@ document.getElementById('btn-toggle-cols').addEventListener('click', () => {
   document.getElementById('main-table').classList.toggle('show-all-cols');
 });
 
+/* ─── CUSTOM CONFIRM / ALERT MODAL ─── */
+function uiConfirm(title, message, okText = 'OK', okClass = 'btn-primary') {
+  return new Promise(resolve => {
+    const overlay = document.getElementById('confirm-overlay');
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-message').textContent = message;
+    
+    const btnOk = document.getElementById('btn-confirm-ok');
+    const btnCancel = document.getElementById('btn-confirm-cancel');
+    
+    btnOk.textContent = okText;
+    btnOk.className = okClass;
+    btnCancel.style.display = '';
+
+    const cleanup = () => {
+      btnOk.removeEventListener('click', onOk);
+      btnCancel.removeEventListener('click', onCancel);
+      overlay.classList.remove('open');
+    };
+    const onOk = () => { cleanup(); resolve(true); };
+    const onCancel = () => { cleanup(); resolve(false); };
+
+    btnOk.addEventListener('click', onOk);
+    btnCancel.addEventListener('click', onCancel);
+    overlay.classList.add('open');
+  });
+}
+
+function uiAlert(title, message) {
+  return new Promise(resolve => {
+    const overlay = document.getElementById('confirm-overlay');
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-message').textContent = message;
+    
+    const btnOk = document.getElementById('btn-confirm-ok');
+    const btnCancel = document.getElementById('btn-confirm-cancel');
+    
+    btnOk.textContent = 'OK';
+    btnOk.className = 'btn-primary';
+    btnCancel.style.display = 'none'; // hide cancel button for alerts
+
+    const cleanup = () => {
+      btnOk.removeEventListener('click', onOk);
+      overlay.classList.remove('open');
+    };
+    const onOk = () => { cleanup(); resolve(true); };
+    
+    btnOk.addEventListener('click', onOk);
+    overlay.classList.add('open');
+  });
+}
+
+
 /* ─── MODAL ─── */
 const overlay = document.getElementById('modal-overlay');
 const form    = document.getElementById('app-form');
@@ -268,8 +321,11 @@ function openModal(id = null) {
   overlay.classList.add('open');
 }
 
-function closeModal() {
-  if (formDirty && !confirm('You have unsaved changes. Discard them?')) return;
+async function closeModal() {
+  if (formDirty) {
+    const confirmed = await uiConfirm('Unsaved Changes', 'You have unsaved changes. Discard them?', 'Discard', 'btn-primary');
+    if (!confirmed) return;
+  }
   overlay.classList.remove('open');
   editId = null;
   formDirty = false;
@@ -286,6 +342,14 @@ window.openEdit = function(id) { openModal(id); };
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const id = document.getElementById('edit-id').value;
+
+  const confirmed = await uiConfirm(
+    id ? 'Update Application' : 'Save Application',
+    `Are you sure you want to ${id ? 'update' : 'save'} this application?`,
+    id ? 'Update' : 'Save'
+  );
+  if (!confirmed) return;
+
   const entry = {
     company:      document.getElementById('f-company').value.trim(),
     date:         document.getElementById('f-date').value,
@@ -319,25 +383,27 @@ form.addEventListener('submit', async e => {
 
     if (!res.ok) throw new Error('Failed to save application');
     
-    toast(id ? 'Application updated.' : 'Application saved.', 'success');
+    await uiAlert('Success', id ? 'Application updated successfully.' : 'Application saved successfully.');
+    formDirty = false;
     closeModal();
     load(); // Reload table data
   } catch (err) {
-    toast('Error saving: ' + err.message, 'error');
+    await uiAlert('Error', 'Error saving: ' + err.message);
     console.error(err);
   }
 });
 
 /* ─── DELETE ─── */
 window.deleteRow = async function(id) {
-  if (!confirm('Are you sure you want to delete this application?')) return;
+  const confirmed = await uiConfirm('Delete Application', 'Are you sure you want to delete this application? This cannot be undone.', 'Delete');
+  if (!confirmed) return;
   try {
     const res = await fetch(`${API_BASE}/applications/${id}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed to delete application');
-    toast('Application deleted.', 'error');
+    await uiAlert('Deleted', 'Application deleted successfully.');
     load(); // Reload table data
   } catch (err) {
-    toast('Error deleting: ' + err.message, 'error');
+    await uiAlert('Error', 'Error deleting: ' + err.message);
     console.error(err);
   }
 };
