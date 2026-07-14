@@ -1,5 +1,9 @@
 # 🚀 Azure Connected Job Tracker
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20App-blue?style=for-the-badge&logo=render)](https://jobtracker-7ysb.onrender.com)
+
+**🔗 Live App: [https://jobtracker-7ysb.onrender.com](https://jobtracker-7ysb.onrender.com)**
+
 A personal, simple, and clean Job Application Tracker connected to **Azure Blob Storage** for database persistence. Built with Node.js, Express, and Vanilla JavaScript.
 
 ---
